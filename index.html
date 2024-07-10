@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="A Multi-Modal Neural Geometric Solver with Textual Clauses Parsed from Diagram">
+  <meta name="keywords" content="Geometry problem solving, PGPSNet, Multi-Modal ">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PGPSNet: A Multi-Modal Neural Geometric Solver with Textual Clauses Parsed from Diagram</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script> -->
+  <!-- <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+/Users/panlu/Library/Mobile Documents/com~apple~CloudDocs/ImageMath/visual-mathqa-server/data_final/images
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script> -->
+
+<link rel="icon" href="./static/images/ucas_logo_circle.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/leaderboard.css">
+
+  <!-- <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator_bulma.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script> -->
+  <script type="text/javascript" src="static/js/sort-table.js" defer></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/explorer-index.js"></script>
+  <script src="./static/js/question_card.js"></script>
+
+  <script src="./static/js/leaderboard_testmini.js"></script>  
+  <script src="./data/results/output_folders.js" defer></script>
+  <script src="./data/results/model_scores.js" defer></script>
+
+  <script src="./visualizer/data/data_public.js" defer></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://arxiv.org/pdf/2302.11097">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a> 
+      <!-- @PAN TODO: consider adding links? -->
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://mathvista.github.io/">
+            <b>MathVista</b>
+          </a>
+          <a class="navbar-item" href="https://github.com/zzli2022/LANS/tree/main">
+            <b>LANS</b>
+          </a>
+          <a class="navbar-item" href="https://eternal8080.github.io/LANS.github.io/">
+            <b>GeoEval</b>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">A Multi-Modal Neural Geometric Solver with Textual Clauses Parsed from Diagram</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://mingliangzhang2018.github.io/">Mingliang Zhang</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://nlpr.ia.ac.cn/pal/People/YinFei.html">Fei Yin</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://nlpr.ia.ac.cn/liucl/">Chenglin Liu</a><sup>1,2</sup>,
+            </span>
+           
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>MAIS, Institute of Automation of Chinese Academy of Sciences,</span>
+            <span class="author-block"><sup>2</sup>School of Artifcial Intelligence, University of Chinese Academy of Sciences</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2302.11097"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2302.11097"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://github.com/mingliangzhang2018/PGPS"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>code</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://nlpr.ia.ac.cn/databases/CASIA-PGPS9K/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>dataset</span>
+                  </a>
+              </span>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="hero is-light is-small">
+  <div class="hero-body has-text-centered">
+    <!-- <h1 class="title is-1 mathvista"><img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>MathVista Dataset</h1> -->
+  <h1 class="title is-1 mathvista">
+    <!--<img src="static/images/mathvista.png" style="width:1em;vertical-align: middle" alt="Logo"/>-->
+    <span class="mathvista" style="vertical-align: middle">Introduction</span>
+  </h1>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container" style="margin-bottom: 2vh;">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="content has-text-justified">
+          <p>
+            <b>Geometry problem solving (GPS)</b> involves high-level mathematical reasoning, necessitating the ability to fuse <b>multi-modal</b> information and apply geometric knowledge. Recent neural solvers have shown great potential in this area but struggle with diagram presentation and modal fusion. To address these challenges, we introduce <b>PGPSNet</b>, a neural solver that effectively converts diagrams into basic textual clauses to describe their features. <b>PGPSNet</b> integrates multi-modal information through <b>structural and semantic pre-training</b>, <b>data augmentation</b>, and <b>self-limited decoding</b>. This endows it with rich knowledge of geometric theorems and representations, enhancing geometric understanding and reasoning.          
+          </p>
+          <div id="results-carousel" class="carousel results-carousel">
+            <div class="box m-5">
+              <div class="content has-text-centered">
+                <img src="static/images/PGPSNet.png" alt="geometric reasoning" width="50%"/>
+                <p> Overview of <b>PGPSNet</b> solver. <b>PGPSNet</b> is a multi-modal
+                  learning framework whose modal inputs contain not only the diagram and textual problem, but also the textual clauses parsed from
+                  diagram. It generates the theorem-based interpretable solution program to solve geometry problem.
+                </p>
+              </div>
+            </div>
+            <div class="box m-5">
+              <div class="content has-text-centered">
+                <img src="static/images/pipeline.png" alt="comparison" width="100%"/>
+                <p>Pipeline of structural and semantic pre-training. [M] denotes the mask token. <br>Class tags of [G], [N], [ARG], [P], [ANGID] represent
+                  tokens of general, variable, argument, point and angle ID, respectively. <br>Section tags of [S], [C], [T] refer to tokens of structure, condition and
+                  target, respectively.
+                </p>
+              </div>
+            </div>
+          </div>
+         
+          <br><br>
+          <p>
+            To support GPS research, we have constructed a large-scale, finely-annotated dataset named <b>PGPS9K</b>, which includes detailed diagram annotations and interpretable solution programs. Our experiments on <b>PGPS9K</b> and the existing <b>Geometry3K</b> dataset demonstrate that <b>PGPSNet</b> significantly outperforms state-of-the-art neural solvers and achieves results comparable to well-designed symbolic solvers. 
+          </p>
+           
+          <ul class="custom-list">
+            <li><b>Theorem-based:</b> Solving problems in PGPS9K need to apply geometric theorem knowledge to carry out algebraic calculation and get numerical results finally.</li>
+            <li><b>Diagram-dependent:</b> Above 90% of problems must be solved using the diagrams because necessary conditions such as variable content and geometric structure are displayed via visual form instead of text.</li>
+            <li><b>Abstract:</b> The diagram is integrated with basic geometric primitives (point, line, circle) and non-geometric primitives (text, symbol). No complex semantic scenarios are involved in textual problem except abstract geometric conditions.</li>
+            <li><b>Fine-grained:</b> Problems with the same diagram vary in conditions or targets. Slight distinctions in textual problems usually lead to completely different solutions to problems.</li>
+            <li><b>Condition-redundancy:</b> Lots of conditions in semantic clauses or textual problem are not needed in problem solving at hand.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+</div>
+</section>
+
+
+<!-- DATASET SECTION -->
+<section class="hero is-light is-small">
+  <div class="hero-body has-text-centered">
+    <!-- <h1 class="title is-1 mathvista"><img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>MathVista Dataset</h1> -->
+  <h1 class="title is-1 mathvista">
+    <!--<img src="static/images/mathvista.png" style="width:1em;vertical-align: middle" alt="Logo"/>-->
+    <span class="mathvista" style="vertical-align: middle">PGPS9K Dataset</span>
+  </h1>
+  </div>
+</section>
+
+<!-- <section class="section">
+  <div class="container" style="margin-bottom: 2vh;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Introduction</h2>
+        <div class="content has-text-justified">
+          <p> -->
+            
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <!-- <div class="column is-full-width has-text-centered"> -->
+        <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview</h2>
+        <div class="content has-text-justified">
+          <p>
+            The <b>Plane Geometry Problem Solving Dataset (PGPS9K)</b> was constructed by the State Key Laboratory of Multimodal Artificial Intelligence Systems (MAIS), <a href="http://www.ia.cas.cn/">Institute of Automation of Chinese Academy of Sciences</a>(CASIA). The samples in <b>PGPS9K</b> are labeled with both fine-grained diagram annotation and interpretable solution program, where the diagram annotation is converted into structural clauses and semantic clauses to effectively describe multi-level information in geometry diagram.
+          </p>
+          <p>
+            <span class="mathvista">PGPS9K</span> is composed of 9,022 geometry problems paired with non-duplicate 4,000 geometry diagrams, where 2,891 problems paired with 1,738 diagrams are selected from <a href="https://lupantech.github.io/inter-gps/">Geometry3K dataset</a>, the rest of problems are collected from five popular textbooks across grades 6-12 on <a href="https://www.mheducation.com/">mathematics curriculum websites</a>. Our <b>PGPS9K</b> is divided into 30 problem types as exhibited in the following figure, covering almost all problem types of plane geometry problem in corresponding grades.
+          </p>
+
+          <div id="results-carousel" class="carousel results-carousel">
+            <div class="box m-5">
+              <div class="content has-text-centered">
+                <img src="static/images/distributions.png" alt="distribution" width="80%"/>
+                <p> Distribution of problem types of PGPS9K dataset.</p>
+              </div>
+            </div>
+            <div class="box m-5">
+              <div class="content has-text-centered">
+                <img src="static/images/Comparison.png" alt="comparison" width="100%"/>
+                <p>Comparison with existing GPS datasets. <br>Type, OP and PL represent problem type, operator number and program length, respectively.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="content has-text-centered">
+            <img src="static/images/source_dataset.png" alt="geometric reasoning" width="60%"/>
+            <p> Summary of the 31 different source datasets in <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+              <span class="mathvista">MathVista</span>.
+            </p>
+          </div>
+          <div class="content has-text-centered">
+            <img src="static/images/our_new_3_datasets.png" alt="geometric reasoning" width="70%"/>
+            <p> Examples of our newly annotated datasets: IQTest, FunctionQA, and PaperQA.</p>
+          </div> -->
+
+
+        </div>
+      </div>
+    </div>
+
+
+    
+    <div class="columns is-centered m-6">
+      <div class="column is-full has-text-centered content">
+        <h2 class="title is-3">Examples</h2>
+        <p>
+          The annotations of <b>PGPS9K</b> include diagram annotation and solution program, where the diagram annotation is to extract structural and semantic information in diagram and the solution program defines the solution steps of problem. Diagram annotation, textual clauses and solution program are shown as follows.
+        </p>
+    
+
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/examples/example.png" alt="example" width="80%"/>
+              <p>Example presentation of PGPS9K dataset.</p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/examples/templates.png" alt="example" width="100%"/>
+              <p> Templates of textual clauses. The symbols of &, *, $, % denote point, line, variable and angle ID, respectively</p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/examples/solution program.png" alt="example" width="45%"/>
+              <p>Annotation of solution program and its interpretability</p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/examples/oprator.png" alt="example" width="100%"/>
+              <p>Program sets defined in our solution program, consisting of 34 operators and 55 operands, <br>where operands involve 11 problem
+                variables, 7 process variables, 26 augments and 11 constants</p>
+            </div>
+          </div>
+         
+
+          
+        </div>
+
+        <br><br>
+      
+      </div>
+    </div>
+    <!-- <div class="columns is-centered m-6">
+      <div class="column is-full has-text-centered content">
+        <h2 class="title is-3">Statistics</h2>
+        <p>Notable statistics of <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+          <span class="mathvista">MathVista</span></p>
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/context-dist.png" alt="context" class="stats-image">
+              <p>Distribution of visual context types within <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/category.png" alt="category" class="stats-image"/>
+              <p>Category distribution of problems within <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/grade-levels.png" alt="grade" class="stats-image"/>
+              <p>Distribution of questions across different grade levels within <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/qs-len.png" alt="qs-len" class="stats-image"/>
+              <p>Distribution of the number of words per question in <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span>. 
+                Questions with a length greater than 60 are categorized as 61 for visualization simplicity 
+              </p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/reasoning.png" alt="reasoning" class="stats-image"/>
+              <p>Portion of each mathematical reasoning type involved in the problems of <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/reasoning-count.png" alt="reasoning-count" class="stats-image"/>
+              <p>Distribution of the number of mathematical reasoning types within <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/statistics/task-type.png" alt="task-type" class="stats-image"/>
+              <p>Task type distribution of problems within <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+                <span class="mathvista">MathVista</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered m-6">
+      <div class="column is-max-desktop has-text-centered">
+        <h2 class="title is-3" id="visualization">Visualization</h2>
+        <iframe src="visualizer/explore.html" style="width: 100%;min-height: 100vh; border-radius: 20px;"></iframe>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- RESULTS SECTION -->
+<section class="hero is-light is-small">
+  <div class="hero-body has-text-centered">
+    <h1 class="title is-1 mathvista">Experiment Results</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div class="columns is-centered m-6">
+      <div class="column is-full has-text-centered content">
+        <h2 class="title is-3">Numerical answer accuracies of state-of-the-art GPS solvers.</h2>
+        <!-- <p>One example for each reasoning skill required in <span class="mathvista">MathVista</span></p> -->
+        <table class="js-sort-table" id="results">
+          <thead>
+            <tr>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Method</th>
+              <th colspan="3" style="color: gray;">Geometry3K</th>
+              <th colspan="3" style="color: gray;">PGPS9K</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th class="js-sort-number" style="color: gray;">Completion</th>
+              <th class="js-sort-number" style="color: gray;">Choice</th>
+              <th class="js-sort-number" style="color: gray;">Top-3</th>
+              <th class="js-sort-number" style="color: gray;"><b>Completion<b></th>
+              <th class="js-sort-number" style="color: gray;">Choice</th>
+              <th class="js-sort-number" style="color: gray;">Top-3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Human Expert [Lu et al., 2021]</td>
+              <td>-</td>
+              <td>90.9</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Baseline (Neural Solver) [Lu et al., 2021]</td>
+              <td>-</td>
+              <td>35.9</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>InterGPS (Predict)* [Lu et al., 2021]</td>
+              <td>44.6</td>
+              <td>56.9</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>InterGPS (Diagram GT)* [Lu et al., 2021]</td>
+              <td>64.2</td>
+              <td>71.7</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>InterGPS (All GT)* [Lu et al., 2021]</td>
+              <td><b class="best-score-text">69.0</b></td>
+              <td>75.9</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>NGS# [Chen et al., 2021]</td>
+              <td>35.3</td>
+              <td>58.8</td>
+              <td>62.0</td>
+              <td>34.1</td>
+              <td>46.1</td>
+              <td>60.9</td>
+            </tr>
+            <tr>
+              <td>Geoformer# [Chen et al., 2022]</td>
+              <td>36.8</td>
+              <td>59.3</td>
+              <td>62.5</td>
+              <td>35.6</td>
+              <td>47.3</td>
+              <td>62.3</td>
+            </tr>
+            <tr>
+              <td>PGPSNet</td>
+              <td>65.0</td>
+              <td><b class="best-score-text">77.9</b></td>
+              <td><b class="best-score-text">80.7</b></td>
+              <td><b class="best-score-text">62.7</b></td>
+              <td><b class="best-score-text">70.4</b></td>
+              <td><b class="best-score-text">79.5</b></td>
+            </tr>
+          </tbody>
+        </table>
+        
+    
+        * denotes results re-produced with the authors' code. <br>
+        # denotes methods re-implemented by us. 
+       
+
+
+        <h2 class="title is-3">Ablation studies on Geometry3K.</h2>
+        <table class="js-sort-table" id="results">
+          <thead>
+            <tr>
+              <th rowspan="2" class="js-sort-number" style="vertical-align: middle; color: gray;">Self-limited Decoder</th>
+              <th rowspan="2" class="js-sort-number" style="vertical-align: middle; color: gray;">Data Aug</th>
+              <th rowspan="2" class="js-sort-number" style="vertical-align: middle; color: gray;">Structural Clauses</th>
+              <th rowspan="2" class="js-sort-number" style="vertical-align: middle; color: gray;">Pre-trained LM</th>
+              <th colspan="3" class="js-sort-number" style="vertical-align: middle; color: gray;">Ans acc</th>
+              <th colspan="3" class="js-sort-number" style="vertical-align: middle; color: gray;">Prog acc</th>
+            </tr>
+            <tr>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Completion</th>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Choice</th>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Top-3</th>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Completion</th>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Choice</th>
+              <th class="js-sort-number" style="vertical-align: middle; color: gray;">Top-3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>✔</td>
+              <td>✘</td>
+              <td>✔</td>
+              <td>✘</td>
+              <td>32.5</td>
+              <td>52.2</td>
+              <td>57.6</td>
+              <td>27.2</td>
+              <td>47.3</td>
+              <td>53.1</td>
+            </tr>
+            <tr>
+              <td>✘</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✘</td>
+              <td>28.2</td>
+              <td>48.3</td>
+              <td>50.7</td>
+              <td>25.4</td>
+              <td>42.7</td>
+              <td>45.6</td>
+            </tr>
+            <tr>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✘</td>
+              <td>36.6</td>
+              <td>59.5</td>
+              <td>62.4</td>
+              <td>33.9</td>
+              <td>52.8</td>
+              <td>58.6</td>
+            </tr>
+            <tr>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✘</td>
+              <td>✘</td>
+              <td>38.4</td>
+              <td>61.7</td>
+              <td>64.8</td>
+              <td>34.8</td>
+              <td>54.2</td>
+              <td>59.2</td>
+            </tr>
+            <tr>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td>48.1</td>
+              <td>67.5</td>
+              <td>71.4</td>
+              <td>45.4</td>
+              <td>62.0</td>
+              <td>68.1</td>
+            </tr>
+            <tr>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td>✔</td>
+              <td><b class="best-score-text">65.0</b></td>
+              <td><b class="best-score-text">77.9</b></td>
+              <td><b class="best-score-text">80.7</b></td>
+              <td><b class="best-score-text">62.8</b></td>
+              <td><b class="best-score-text">72.4</b></td>
+              <td><b class="best-score-text">78.2</b></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <p>🚨 For more details, please refer to <a href="https://arxiv.org/pdf/2302.11097">this link</a> 
+          </p>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  
+    <!-- <div class="columns is-centered m-6">
+      <div class="column is-full has-text-centered content">
+        <h2 class="title is-3">Visualization Examples</h2>
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/5.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/6.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/37.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/38.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/39.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/40.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/41.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/42.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/43.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/44.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/45.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/46.png" alt="" width="50%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/47.png" alt="" width="60%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/48.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/49.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/50.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/51.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/52.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/53.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/54.png" alt="" width="40%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/55.png" alt="" width="55%"/>
+            </div>
+          </div>
+          <div class="box m-5">
+            <div class="content has-text-centered">
+              <img src="static/images/results-examples/56.png" alt="" width="50%"/>
+            </div>
+          </div>   
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container is-full has-text-centered content m-6" id="result-table">
+      <h2 class="title is-3" id="explorer">Explorer</h2>
+      <p>Explore the outputs of each model on <img src="static/images/mathvista.png" style="width:1.0em;vertical-align: middle" alt="Logo"/>
+        <span class="mathvista">MathVista</span></p>
+      <div class="level has-text-centered" style="position: sticky; top: 0; z-index: 20;">
+        <div class="level-item box m-3" style="width: 30%; background: rgba(250, 250, 250, 1);">
+          <button class="button" style="width: 100%; border: none; background: rgba(250, 250, 250, 1);" id="refresh-qids">
+            <span class="icon is-large">
+              <i class="fa fa-redo fa-lg" aria-hidden="true"></i>
+            </span>
+            <p class="title is-4 m-0">Refresh Question</p>
+          </button>
+        </div>
+        <div class="level-item box m-3" style="width: 30%; background: rgba(250, 250, 250, 1);">
+          <div class="dropdown" style="width: 100%;">
+            <div class="dropdown-trigger has-text-justified" style="width: 100%; ">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" style="width: 100%; border: none; background: rgba(250, 250, 250, 1);">
+                <p class="title m-0 is-4 dropdown-display">Multimodal Bard</p>
+                <span class="icon is-large" style="position: absolute; right:0;">
+                  <i class="fas fa-angle-down fa-lg" aria-hidden="true"></i>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu" style="width:100%;">
+              <div class="dropdown-content">
+                <!-- <a class="dropdown-item">
+                  Dropdown item
+                </a>
+                <a class="dropdown-item">
+                  Other dropdown item
+                </a> ->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="level-item box m-3" style="width: 30%; background: rgba(250, 250, 250, 1);">
+          <div class="dropdown" style="width: 100%;">
+            <div class="dropdown-trigger has-text-justified" style="width: 100%;">
+              <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" style="width: 100%; border: none; background: rgba(250, 250, 250, 1);">
+                <p class="title m-0 is-4 dropdown-display">CoT GPT4 (Caption+OCR)</p>
+                <span class="icon is-large" style="position: absolute; right:0;">
+                  <i class="fas fa-angle-down fa-lg" aria-hidden="true"></i>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu" role="menu" style="width:100%;">
+              <div class="dropdown-content">
+                <!-- <a class="dropdown-item">
+                  Dropdown item
+                </a>
+                <a class="dropdown-item">
+                  Other dropdown item
+                </a> ->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<!-- @PAN TODO: bibtex -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">BibTeX</h2>
+    <pre><code>@inproceedings{Zhang2023PGPS,
+      title     = {A Multi-Modal Neural Geometric Solver with Textual Clauses Parsed from Diagram},
+      author    = {Zhang, Ming-Liang and Yin, Fei and Liu, Cheng-Lin},
+      booktitle = {IJCAI},
+      year      = {2023},
+    }
+    </code></pre>
+  </div>
+</section>
+
+<section>
+  <div class="section" id="org-banners" style="display:flex">
+    <a href="https://ia.cas.cn/" target="_blank" rel="external">
+        <img class="center-block org-banner" src="static/images/CASIA logo.png" style="width: 400px; height: 200px;">
+    </a>
+    <a href="https://www.ucas.edu.cn/" target="blank" class="ext-link">
+        <img class="center-block org-banner" src="static/images/ucas_logo.png" style="width: 400px; height: 200px;">
+    </a>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <!-- <div class="container"> -->
+    <div class="content has-text-centered">
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is website adapted from <a href="https://nerfies.github.io/">Nerfies</a>, licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+</footer>
+
+</body>
+</html>
